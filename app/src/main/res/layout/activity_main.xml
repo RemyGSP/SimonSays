@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/buttonRed"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="276dp"
+        android:layout_marginTop="312dp"
+        android:backgroundTint="#FF0000"
+        android:text="Red"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonGreen"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="312dp"
+        android:backgroundTint="#2FFF00"
+        android:text="Green"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonYellow"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="436dp"
+        android:backgroundTint="#CDCD01"
+        android:text="Yellow"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonBlue"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="200dp"
+        android:backgroundTint="#0000FF"
+        android:onClick="onButtonClick"
+        android:text="Blue"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

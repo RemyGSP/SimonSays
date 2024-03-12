@@ -1,29 +1,29 @@
 package com.guillem.simonsays
 
+
 import android.media.SoundPool
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.widget.Button
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 
 class MainActivity : AppCompatActivity() {
     private val gameSequence = mutableListOf<Int>()
-    private var playerSequence = mutableListOf<Int>()
+    private val playerSequence = mutableListOf<Int>()
     private lateinit var soundPool: SoundPool
-    private var currentSequenceLength: Int = 0;
-    private var soundIds = IntArray(4)
-    private lateinit var coroutine : Job
+    private var currentSequenceLength: Int = 0
+    private val soundIds = IntArray(4)
+    private lateinit var coroutine: Job
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val gameIndex : IntArray = IntArray(64)
-        var isGamePlaying : Boolean = true;
-        var currentGameLength : Int;
 
         // Initialize SoundPool
         soundPool = SoundPool.Builder().setMaxStreams(4).build()
@@ -32,71 +32,99 @@ class MainActivity : AppCompatActivity() {
         soundIds[2] = soundPool.load(this, R.raw.soundyellow, 1)
         soundIds[3] = soundPool.load(this, R.raw.redsound, 1)
 
+
+
         // Set up button listeners
-        findViewById<Button>(R.id.buttonBlue).setOnClickListener {
+        val buttonBlue = findViewById<Button>(R.id.buttonBlue)
+        val buttonYellow = findViewById<Button>(R.id.buttonYellow)
+        val buttonGreen = findViewById<Button>(R.id.buttonGreen)
+        val buttonRed = findViewById<Button>(R.id.buttonRed)
+
+        buttonBlue.setOnClickListener {
             playerSequence.add(1)
-            CheckSequence()
+            checkSequence()
             soundPool.play(soundIds[1], 1.0f, 1.0f, 1, 0, 1.0f)
+            lightUpButton(buttonBlue)
         }
-        findViewById<Button>(R.id.buttonYellow).setOnClickListener {
+        buttonYellow.setOnClickListener {
             playerSequence.add(2)
-            CheckSequence()
+            checkSequence()
             soundPool.play(soundIds[2], 1.0f, 1.0f, 1, 0, 1.0f)
+            lightUpButton(buttonYellow)
         }
-        findViewById<Button>(R.id.buttonGreen).setOnClickListener {
+        buttonGreen.setOnClickListener {
             playerSequence.add(0)
-            CheckSequence()
+            checkSequence()
             soundPool.play(soundIds[0], 1.0f, 1.0f, 1, 0, 1.0f)
+            lightUpButton(buttonGreen)
         }
-        findViewById<Button>(R.id.buttonRed).setOnClickListener {
+        buttonRed.setOnClickListener {
             playerSequence.add(3)
-            CheckSequence()
+            checkSequence()
             soundPool.play(soundIds[3], 1.0f, 1.0f, 1, 0, 1.0f)
+            lightUpButton(buttonRed)
         }
-        PlaySequence()
+        playSequence()
     }
-    private fun DisableButtons() {
+
+    private fun disableButtons() {
         findViewById<Button>(R.id.buttonBlue).isEnabled = false
         findViewById<Button>(R.id.buttonYellow).isEnabled = false
         findViewById<Button>(R.id.buttonGreen).isEnabled = false
         findViewById<Button>(R.id.buttonRed).isEnabled = false
     }
 
-    private fun EnableButtons() {
+    private fun enableButtons() {
         findViewById<Button>(R.id.buttonBlue).isEnabled = true
         findViewById<Button>(R.id.buttonYellow).isEnabled = true
         findViewById<Button>(R.id.buttonGreen).isEnabled = true
         findViewById<Button>(R.id.buttonRed).isEnabled = true
     }
 
-    private fun PlaySequence(){
-        DisableButtons()
-        var currentIndex = 0;
+    private fun playSequence() {
+        disableButtons()
+        var currentIndex = 0
         coroutine = lifecycleScope.launch {
-            for (i in 0..currentSequenceLength){
-                soundPool.play(soundIds[gameSequence.get(currentIndex)], 1.0f, 1.0f, 1, 0, 1.0f)
+            repeat(currentSequenceLength) {
+                val buttonToLightUp = when (gameSequence[currentIndex]) {
+                    0 -> findViewById<Button>(R.id.buttonGreen)
+                    1 -> findViewById<Button>(R.id.buttonBlue)
+                    2 -> findViewById<Button>(R.id.buttonYellow)
+                    3 -> findViewById<Button>(R.id.buttonRed)
+                    else -> null
+                }
+                buttonToLightUp?.let { lightUpButton(it) }
+                soundPool.play(soundIds[gameSequence[currentIndex]], 1.0f, 1.0f, 1, 0, 1.0f)
                 currentIndex++
                 delay(1000)
-
             }
-            val newNumber = (0..3).random();
-                gameSequence.add(newNumber)
-
-                StopSequence()
-
-
+            val newNumber = (0..3).random()
+            gameSequence.add(newNumber)
+            stopSequence()
         }
     }
 
-    private fun CheckSequence(){
-        for (i in 0..playerSequence.size){
-            
+    private fun checkSequence() {
+        if (playerSequence.size == gameSequence.size) {
+            if (playerSequence == gameSequence) {
+                currentSequenceLength++
+                playerSequence.clear()
+                playSequence()
+            } else {
+                // Game Over
+                // Implement your game over logic here
+            }
         }
     }
-    private fun StopSequence(){
-        currentSequenceLength++
-        coroutine.cancel()
-        EnableButtons()
+
+    private fun stopSequence() {
+        playerSequence.clear()
+        enableButtons()
     }
+
+    private fun lightUpButton(button: Button) {
+
+    }
+
 
 }

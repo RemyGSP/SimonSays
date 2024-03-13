@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.media.SoundPool
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -40,26 +41,31 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
         playSequence()
     }
 
+
+    private fun startGameSequence() {
+        gameSequence.clear()
+        playerSequence.clear()
+        currentSequenceLength = 1 // Start with a sequence length of 1
+        addNewItemToSequence()
+        playSequence()
+    }
+
     override fun onCircleClicked(color: Int) {
         playerSequence.add(circleColors.indexOf(color))
         checkSequence()
         soundPool.play(soundIds[circleColors.indexOf(color)], 1.0f, 1.0f, 1, 0, 1.0f)
     }
 
-
-
     private fun playSequence() {
         var currentIndex = 0
         lifecycleScope.launch {
             repeat(currentSequenceLength) {
                 val buttonToLightUp = gameSequence[currentIndex]
+                simonSaysView.lightUpCircle(buttonToLightUp)
                 soundPool.play(soundIds[buttonToLightUp], 1.0f, 1.0f, 1, 0, 1.0f)
                 currentIndex++
                 delay(1000)
             }
-            val newNumber = (0..3).random()
-            gameSequence.add(newNumber)
-            stopSequence()
         }
     }
 
@@ -68,16 +74,23 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
             if (playerSequence == gameSequence) {
                 currentSequenceLength++
                 playerSequence.clear()
+                addNewItemToSequence() // Add a new item to the sequence
                 playSequence()
             } else {
                 // Game Over
-                // Implement your game over logic here
                 playerSequence.clear()
                 gameSequence.clear()
-                currentSequenceLength = 0
+                currentSequenceLength = 1 // Reset sequence length
+                startGameSequence() // Start a new game
             }
         }
     }
+
+    private fun addNewItemToSequence() {
+        val newItem = (0 until circleColors.size).random()
+        gameSequence.add(newItem)
+    }
+
 
     private fun stopSequence() {
         playerSequence.clear()

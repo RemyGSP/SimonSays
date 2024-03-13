@@ -41,10 +41,14 @@ class SimonSaysView(context: Context, attrs: AttributeSet) : View(context, attrs
     private fun drawHighlightedCircle(canvas: Canvas, x: Float, y: Float) {
         val highlightPaint = Paint().apply {
             color = Color.WHITE
-            style = Paint.Style.STROKE
+            style = Paint.Style.FILL_AND_STROKE // Fill and stroke the circle
             strokeWidth = 10f
         }
-        canvas.drawCircle(x, y, 200f, highlightPaint)
+        val radius = 200f
+        val innerRadius = 160f // Reduce inner radius for more prominent appearance
+        canvas.drawCircle(x, y, radius, highlightPaint)
+        highlightPaint.color = Color.BLACK // Change color to black for inner circle
+        canvas.drawCircle(x, y, innerRadius, highlightPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

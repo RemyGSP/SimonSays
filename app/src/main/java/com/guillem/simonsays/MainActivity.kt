@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
         val startButton: Button = findViewById(R.id.startButton)
         startButton.setOnClickListener {
             startGameSequence()
+            score = 0;
+            scoreTextView.text = score.toString()
         }
     }
 
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
                 currentIndex++
                 delay(1000)
             }
+            simonSaysView.lightUpCircle(-1)
         }
     }
 

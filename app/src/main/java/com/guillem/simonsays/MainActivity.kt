@@ -9,6 +9,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
     private var currentSequenceLength: Int = 0
     private val soundIds = IntArray(4)
     private lateinit var simonSaysView: SimonSaysView
+    private var score: Int = 0
+    private lateinit var scoreTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +42,15 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
         simonSaysView = findViewById(R.id.simonSaysView)
         simonSaysView.setOnCircleClickListener(this)
 
-        playSequence()
-    }
+        scoreTextView = findViewById(R.id.scoreTextView)
+        updateScoreDisplay()
 
+        // Set up the start button click listener
+        val startButton: Button = findViewById(R.id.startButton)
+        startButton.setOnClickListener {
+            startGameSequence()
+        }
+    }
 
     private fun startGameSequence() {
         gameSequence.clear()
@@ -61,6 +71,7 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
         lifecycleScope.launch {
             repeat(currentSequenceLength) {
                 val buttonToLightUp = gameSequence[currentIndex]
+                Log.d("Sequence", gameSequence[currentIndex].toString())
                 simonSaysView.lightUpCircle(buttonToLightUp)
                 soundPool.play(soundIds[buttonToLightUp], 1.0f, 1.0f, 1, 0, 1.0f)
                 currentIndex++
@@ -76,12 +87,16 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
                 playerSequence.clear()
                 addNewItemToSequence() // Add a new item to the sequence
                 playSequence()
+                score += 10 // Increase score on successful sequence completion
+                updateScoreDisplay()
             } else {
                 // Game Over
                 playerSequence.clear()
                 gameSequence.clear()
                 currentSequenceLength = 1 // Reset sequence length
                 startGameSequence() // Start a new game
+                score = 0 // Reset score
+                updateScoreDisplay()
             }
         }
     }
@@ -91,6 +106,9 @@ class MainActivity : AppCompatActivity(), SimonSaysView.CircleClickListener {
         gameSequence.add(newItem)
     }
 
+    private fun updateScoreDisplay() {
+        scoreTextView.text = "Score: $score"
+    }
 
     private fun stopSequence() {
         playerSequence.clear()

@@ -76,4 +76,9 @@ class SimonSaysView(context: Context, attrs: AttributeSet) : View(context, attrs
     interface CircleClickListener {
         fun onCircleClicked(color: Int)
     }
+
+    fun clearLitCircle() {
+        highlightedCircleIndex = -1
+        invalidate()
+    }
 }
